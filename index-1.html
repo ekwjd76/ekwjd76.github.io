@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나의 문화 기록 & 일기장</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background: #f7f8fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: #4b6cb7;
+      background: linear-gradient(to right, #182848, #4b6cb7);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1em;
+    }
+    main {
+      display: flex;
+      flex: 1;
+      padding: 15px;
+      gap: 15px;
+    }
+    section {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+    h2 {
+      margin-top: 0;
+      color: #4b6cb7;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin-top: 6px;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95em;
+    }
+    button {
+      background-color: #4b6cb7;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background-color: #395b9a;
+    }
+    .review-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .review-item h3 {
+      margin: 5px 0;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    #review-section { flex: 2; }
+    #diary-section { flex: 1; }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #eee;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span id="date"></span>
+    <span id="weather">날씨 불러오는 중...</span>
+  </header>
+
+  <main>
+    <!-- 🎬 감상 기록 -->
+    <section id="review-section">
+      <h2>🎬 감상 기록</h2>
+      <input id="title" placeholder="제목 입력" />
+      <select id="rating">
+        <option value="1">⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+      </select>
+      <textarea id="review" rows="3" placeholder="감상평을 적어보세요"></textarea>
+      <button id="addReview">추가</button>
+
+      <div id="reviewList"></div>
+    </section>
+
+    <!-- ✍️ 일기장 -->
+    <section id="diary-section">
+      <h2>📓 나의 일기</h2>
+      <textarea id="diaryText" rows="10" placeholder="오늘의 일기를 적어보세요..."></textarea>
+      <button id="saveDiary">저장</button>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 나의 문화 기록 웹 | HTML + CSS + JS 과제
+  </footer>
+
+  <script>
+    // ------------------- 날짜 표시 -------------------
+    const today = new Date();
+    const todayStr = today.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'short'
+    });
+    document.getElementById("date").textContent = todayStr;
+
+    // ------------------- 날씨 API -------------------
+    const weatherBox = document.getElementById("weather");
+    const API_KEY = "YOUR_OPENWEATHER_API_KEY"; // ← 여기에 API 키 넣기
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=kr`)
+          .then(res => res.json())
+          .then(data => {
+            const weather = data.weather[0].description;
+            const temp = data.main.temp;
+            weatherBox.textContent = `${weather} / ${temp.toFixed(1)}°C`;
+          })
+          .catch(() => {
+            weatherBox.textContent = "날씨 정보를 불러올 수 없습니다.";
+          });
+      });
+    } else {
+      weatherBox.textContent = "위치 접근 불가";
+    }
+
+    // ------------------- 감상 기록 -------------------
+    const addBtn = document.getElementById("addReview");
+    addBtn.addEventListener("click", () => {
+      const title = document.getElementById("title").value.trim();
+      const rating = document.getElementById("rating").value;
+      const review = document.getElementById("review").value.trim();
+
+      if (!title || !review) {
+        alert("제목과 감상평을 모두 입력해주세요!");
+        return;
+      }
+
+      const newReview = { title, rating, review, comments: [] };
+      const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+      reviews.push(newReview);
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+
+      document.getElementById("title").value = "";
+      document.getElementById("review").value = "";
+
+      showReviews();
+    });
+
+    function showReviews() {
+      const list = document.getElementById("reviewList");
+      const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+      list.innerHTML = "";
+
+      reviews.forEach((r, i) => {
+        list.innerHTML += `
+          <div class="review-item">
+            <h3>${r.title} (${r.rating}⭐)</h3>
+            <p>${r.review}</p>
+            <input id="comment${i}" placeholder="댓글 작성">
+            <button onclick="addComment(${i})">등록</button>
+            <ul>${r.comments.map(c => `<li>${c}</li>`).join("")}</ul>
+          </div>
+        `;
+      });
+    }
+
+    function addComment(index) {
+      const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+      const input = document.getElementById(`comment${index}`);
+      if (input.value.trim() !== "") {
+        reviews[index].comments.push(input.value);
+        localStorage.setItem("reviews", JSON.stringify(reviews));
+        showReviews();
+      }
+    }
+
+    showReviews();
+
+    // ------------------- 일기 기능 -------------------
+    const diaryKey = `diary-${today.toISOString().split("T")[0]}`;
+    const diaryText = document.getElementById("diaryText");
+
+    document.getElementById("saveDiary").addEventListener("click", () => {
+      localStorage.setItem(diaryKey, diaryText.value);
+      alert("일기가 저장되었습니다!");
+    });
+
+    window.onload = () => {
+      const saved = localStorage.getItem(diaryKey);
+      if (saved) diaryText.value = saved;
+    };
+  </script>
+</body>
+</html>
