@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Homepage</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* 페이지 전체를 플렉스 컨테이너로 만들어 중앙 정렬 */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      align-items: center;      /* 수직 중앙 */
+      justify-content: center;  /* 수평 중앙 */
+      background: linear-gradient(135deg,#f3f7ff 0%, #eef6f8 100%);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Helvetica Neue", Arial;
+    }
+
+    /* 링크를 버튼처럼 보이게 스타일링 */
+    .big-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 220px;             /* 버튼 너비 */
+      height: 64px;             /* 버튼 높이 */
+      background: linear-gradient(180deg,#4b6cb7,#395b9a);
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(57,91,154,0.22), inset 0 -2px 0 rgba(0,0,0,0.08);
+      border: none;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+      user-select: none;
+    }
+
+    /* 호버/포커스 효과 */
+    .big-btn:hover,
+    .big-btn:focus {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(57,91,154,0.24);
+      outline: none;
+      opacity: 0.98;
+    }
+
+    .big-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(57,91,154,0.18);
+      opacity: 0.95;
+    }
+
+    /* 접근성: 키보드 포커스 시 시각적 표시 */
+    .big-btn:focus-visible {
+      outline: 3px solid rgba(75,108,183,0.25);
+      outline-offset: 4px;
+    }
+
+    /* 작은 화면 대응 */
+    @media (max-width: 420px) {
+      .big-btn {
+        width: 82%;
+        height: 56px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="big-btn" href="index.html" role="button" aria-label="Open the next page">OPEN</a>
+</body>
+</html>

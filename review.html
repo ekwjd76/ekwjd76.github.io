@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>감상 기록</title>
+  <style>
+    :root {
+      --bg-beige: #f8f5f1;
+      --accent-lavender: #b9a0ff;
+      --text-main: #4a4a4a;
+      --white-card: #ffffff;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background: var(--bg-beige);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 2px solid #e0d9ff;
+      background: linear-gradient(to right, #d8c9ff, #b9a0ff);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      gap: 30px;
+    }
+
+    /* 감상 기록 작성 폼 */
+    .form-container {
+      background: var(--white-card);
+      border-radius: 20px;
+      box-shadow:
+        6px 6px 14px rgba(0,0,0,0.08),
+        -4px -4px 10px rgba(255,255,255,0.6);
+      padding: 25px;
+      width: 100%;
+      max-width: 750px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+
+    textarea { resize: none; }
+
+    button {
+      background-color: var(--accent-lavender);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+    button:hover { background-color: #a187ff; }
+
+    .tag-section {
+      margin-top: 10px;
+    }
+
+    .tag-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      background-color: var(--accent-lavender);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9em;
+    }
+
+    .tag button {
+      border: none;
+      background: transparent;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .saved-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    /* 카드 리스트 */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .review-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .review-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .review-card img,
+    .review-card .placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .review-card-title {
+      padding: 6px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+
+    /* 수정/삭제 버튼 */
+    .card-btn {
+      position: absolute;
+      top: 8px;
+      padding: 4px 6px;
+      font-size: 0.8em;
+      border-radius: 6px;
+      display: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .edit-btn { left: 8px; background: rgba(255,255,255,0.9); color: #4a4a4a; }
+    .delete-btn { right: 8px; background: rgba(255,200,200,0.9); color: #a00; }
+
+    .review-card:hover .card-btn { display: block; }
+
+    /* 모달 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-content img {
+      width: 60%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-weight: bold;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: #888;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      border-top: 2px solid #e0d9ff;
+      background: #eee;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="date"></div>
+    <div id="weather">날씨 불러오는 중...</div>
+  </header>
+
+  <main>
+    <!-- 작성 폼 -->
+    <div class="form-container">
+      <h3>✏️ 감상 기록 작성</h3>
+      <input type="text" id="titleInput" placeholder="제목 (필수)">
+      <textarea id="contentInput" rows="3" placeholder="감상평 (선택)"></textarea>
+
+      <label>🎞️ 포스터 업로드</label>
+      <input type="file" id="posterInput" accept="image/*">
+
+      <div class="tag-section">
+        <div class="tag-box" id="tagBox"></div>
+        <input type="text" id="tagInput" placeholder="태그 입력 후 Enter">
+        <div class="saved-tags" id="savedTags"></div>
+      </div>
+
+      <button id="saveBtn">저장하기</button>
+      <button id="cancelEditBtn" style="display:none;">수정 취소</button>
+      <button id="backBtn">🏠 메인으로</button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="제목 또는 태그로 검색...">
+    </div>
+
+    <div id="reviewList" class="card-container"></div>
+  </main>
+
+  <footer>© 2025 나의 문화 기록 웹</footer>
+
+  <!-- 상세 모달 -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <img id="modalPoster" src="">
+      <h3 id="modalTitle"></h3>
+      <p id="modalContent"></p>
+      <div id="modalTags"></div>
+    </div>
+  </div>
+
+ <script>
+  // 날짜 + 날씨
+  const today = new Date();
+  document.getElementById("date").textContent = today.toLocaleDateString('ko-KR', {
+    year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+  });
+
+  const weatherBox = document.getElementById("weather");
+  const API_KEY = "YOUR_OPENWEATHER_API_KEY";
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=kr`)
+        .then(res => res.json())
+        .then(data => weatherBox.textContent = `${data.weather[0].description} / ${data.main.temp.toFixed(1)}°C`);
+    });
+  }
+
+  let reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+  let savedTagList = JSON.parse(localStorage.getItem("savedTags") || "[]");
+  let tags = [];
+  let editIndex = -1;
+
+  const reviewList = document.getElementById("reviewList");
+  const searchInput = document.getElementById("searchInput");
+  const tagBox = document.getElementById("tagBox");
+  const savedTagsDiv = document.getElementById("savedTags");
+  const tagInput = document.getElementById("tagInput");
+  const titleInput = document.getElementById("titleInput");
+  const contentInput = document.getElementById("contentInput");
+  const posterInput = document.getElementById("posterInput");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+  // 🔹 태그 출력
+  function showTags() {
+    tagBox.innerHTML = tags.map((t, i) =>
+      `<div class="tag">${t}<button onclick="removeTag(${i})">×</button></div>`
+    ).join("");
+  }
+
+  // 🔹 저장된 태그 출력 (체크박스)
+  function showSavedTags() {
+    savedTagsDiv.innerHTML = savedTagList.map((t, i) =>
+      `<label><input type="checkbox" value="${t}" ${tags.includes(t) ? 'checked' : ''} onchange="toggleTag(this)"> ${t}</label>
+       <button onclick="removeSavedTag(${i})" style="border:none;background:none;color:red;cursor:pointer;">×</button>`
+    ).join(" ");
+  }
+
+  function toggleTag(el) {
+    if (el.checked) {
+      if (!tags.includes(el.value)) tags.push(el.value);
+    } else {
+      tags = tags.filter(t => t !== el.value);
+    }
+    showTags();
+    showSavedTags();
+  }
+
+  function removeSavedTag(i) {
+    if (confirm("이 태그를 삭제할까요?")) {
+      savedTagList.splice(i, 1);
+      localStorage.setItem("savedTags", JSON.stringify(savedTagList));
+      showSavedTags();
+    }
+  }
+
+  function removeTag(i) {
+    tags.splice(i, 1);
+    showTags();
+    showSavedTags();
+  }
+
+  // 🔹 태그 입력 (Enter 입력 시)
+  tagInput.addEventListener("keydown", e => {
+    if (e.key === "Enter" && tagInput.value.trim()) {
+      e.preventDefault();
+      const newTag = tagInput.value.trim();
+      if (!tags.includes(newTag)) tags.push(newTag);
+      if (!savedTagList.includes(newTag)) {
+        savedTagList.push(newTag);
+        localStorage.setItem("savedTags", JSON.stringify(savedTagList));
+      }
+      tagInput.value = "";
+      showTags();
+      showSavedTags(); // ✅ 추가
+    }
+  });
+
+  // 🔹 리뷰 카드 렌더링
+  function renderList() {
+    const q = searchInput.value.toLowerCase();
+    const filtered = reviews.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      (r.tags && r.tags.some(t => t.toLowerCase().includes(q)))
+    );
+
+    reviewList.innerHTML = filtered.map((r, i) => `
+      <div class="review-card" onclick="openModal(${i})">
+        ${r.poster
+          ? `<img src="${r.poster}" alt="${r.title}">`
+          : `<div class="placeholder"></div>`}
+        <div class="card-btn edit-btn" onclick="editReview(${i}, event)">수정</div>
+        <div class="card-btn delete-btn" onclick="deleteReview(${i}, event)">X</div>
+        <div class="review-card-title">${r.title}</div>
+      </div>
+    `).join("");
+  }
+
+  function openModal(i) {
+    const r = reviews[i];
+    document.getElementById("modalPoster").src = r.poster || "";
+    document.getElementById("modalTitle").textContent = r.title;
+    document.getElementById("modalContent").textContent = r.content || "(감상평 없음)";
+    document.getElementById("modalTags").textContent = r.tags.join(", ");
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  document.querySelector(".close-modal").addEventListener("click", () => {
+    document.getElementById("modal").style.display = "none";
+  });
+
+  function editReview(i, e) {
+    e.stopPropagation();
+    const r = reviews[i];
+    titleInput.value = r.title;
+    contentInput.value = r.content;
+    tags = [...r.tags];
+    showTags();
+    showSavedTags();
+    editIndex = i;
+    cancelEditBtn.style.display = "inline-block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function deleteReview(i, e) {
+    e.stopPropagation();
+    if (confirm("삭제하시겠습니까?")) {
+      reviews.splice(i, 1);
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+      renderList();
+    }
+  }
+
+  // 🔹 저장 버튼
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    if (!titleInput.value.trim()) return alert("제목은 필수입니다!");
+
+    const reader = new FileReader();
+    const saveData = (posterData) => {
+      const newData = {
+        title: titleInput.value.trim(),
+        content: contentInput.value.trim(),
+        tags: [...tags],
+        poster: posterData
+      };
+      if (editIndex >= 0) {
+        reviews[editIndex] = newData;
+        editIndex = -1;
+        cancelEditBtn.style.display = "none";
+        alert("수정 완료!");
+      } else {
+        reviews.push(newData);
+        alert("저장되었습니다!");
+      }
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+      resetForm();
+      renderList();
+    };
+    if (posterInput.files[0]) {
+      reader.onload = (e) => saveData(e.target.result);
+      reader.readAsDataURL(posterInput.files[0]);
+    } else {
+      saveData(editIndex >= 0 ? reviews[editIndex].poster : "");
+    }
+  });
+
+  function resetForm() {
+    titleInput.value = "";
+    contentInput.value = "";
+    posterInput.value = "";
+    tags = [];
+    showTags();
+    showSavedTags();
+  }
+
+  cancelEditBtn.addEventListener("click", resetForm);
+  document.getElementById("backBtn").addEventListener("click", () => window.location.href = "index.html");
+  searchInput.addEventListener("input", renderList);
+
+  // ✅ 페이지 로드 시 저장된 태그/리뷰 모두 표시
+  showTags();
+  showSavedTags();
+  renderList();
+</script>
+</body>
+</html>
