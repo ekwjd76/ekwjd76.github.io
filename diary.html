@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>일기 작성</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h2>📓 일기 작성</h2>
+</header>
+
+<!-- layout -->
+<div id="diary-layout">
+
+  <!-- LEFT : Write Form -->
+  <section id="write-area">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>새 일기</h3>
+      <div style="display:flex;gap:8px;">
+        <button id="saveBtnTop">💾 저장</button>
+        <button id="clearBtn">초기화</button>
+      </div>
+    </div>
+
+    <div id="metaRow" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+      <div id="diary-date" style="font-weight:700;color:#333">선택한 날짜 없음</div>
+      <div id="weather-fixed" style="text-align:right;color:#666">☀️ 맑음</div>
+    </div>
+
+    <input id="diary-title" placeholder="제목" style="padding:8px;border-radius:8px;border:1px solid #ccc;margin-top:10px;">
+    <!-- support URL or file -->
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <input id="diary-img" placeholder="이미지 URL (선택)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ccc;">
+      <label style="padding:8px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">
+        파일
+        <input id="diary-image-file" type="file" accept="image/*" style="display:none">
+      </label>
+    </div>
+
+    <textarea id="diaryText" placeholder="일기 내용을 입력하세요 (선택)" style="margin-top:10px;"></textarea>
+  </section>
+
+  <!-- RIGHT : Calendar & Daily List -->
+  <section id="calendar-area">
+   <h3 style="text-align:center">📅 달력</h3>
+   <div id="monthLabel" style="text-align:center;font-weight:700;margin-bottom:6px"></div>
+
+   <div style="display:flex;justify-content:center;gap:10px;margin-bottom:6px;">
+    <button onclick="prevMonth()">◀</button>
+    <button onclick="nextMonth()">▶</button>
+   </div>
+
+   <div id="calendar-wrapper">
+    <div id="weekdays">
+     <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+    </div>
+    <div id="calendar"></div>
+   </div>
+
+   <h4 style="margin-top:12px;">📌 해당 날짜 일기</h4>
+   <div id="selected-day-list"></div>
+
+  </section>
+
+</div>
+
+<!-- BOTTOM SEARCH + FOLDER + LIST -->
+<section id="controls">
+  <input id="searchInput" placeholder="검색 : YYYY-MM-DD / 제목 / 내용" />
+
+  <div id="folder-row">
+    <input id="folderName" placeholder="폴더 이름">
+    <button id="addFolderBtn">＋</button>
+
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button id="allToggle" class="toggle-btn active">전체보기</button>
+      <button id="folderToggle" class="toggle-btn">폴더보기</button>
+    </div>
+  </div>
+
+  <div id="diary-flat-list"></div>
+  <div id="folderList" style="display:none"></div>
+</section>
+
+<!-- Modal: 상세보기 + 수정/삭제 -->
+<div id="modal" class="modal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">×</button>
+    <div id="modalDate" class="modal-date"></div>
+    <div id="modalWeather" class="modal-weather"></div>
+    <img id="modalImage" class="modal-image" src="" style="display:none" />
+    <h3 id="modalTitle"></h3>
+    <p id="modalContent"></p>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+      <div id="modalFolder"></div>
+      <div style="display:flex;gap:8px;">
+        <button id="modalEditBtn">수정</button>
+        <button id="modalDeleteBtn">삭제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 나의 문화 기록 웹
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

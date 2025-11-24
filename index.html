@@ -178,13 +178,27 @@
       <div id="reviewList" class="card-container"></div>
     </section>
 
-    <section id="diary-section">
-      <h2>📓 나의 일기</h2>
-      <textarea id="diaryText" rows="14" placeholder="오늘의 일기를 적어보세요..."></textarea>
-      <button id="saveDiary">💾 저장</button>
+    <section id="diaryListSection">
+      <h2>📓 일기 기록</h2>
+      <ul id="diaryList" class="diary-list"></ul>
+      <button onclick="location.href='diary.html'">✏️ 새 일기 쓰기</button>
     </section>
-  </main>
 
+    <script>
+     const diaryList = document.getElementById("diaryList");
+     const diaryData = JSON.parse(localStorage.getItem("diaries") || "[]");
+
+    diaryData.forEach((d, idx) => {
+      const li = document.createElement("li");
+      li.className = "diary-item";
+      li.innerHTML = `<span>${d.date}</span> <strong>${d.title}</strong>`;
+      li.onclick = () => location.href = `view.html?id=${idx}`;
+      diaryList.appendChild(li);
+    });
+    </script>
+
+  </main>
+ 
   <footer>© 2025 나의 문화 기록 웹</footer>
 
   <script>
