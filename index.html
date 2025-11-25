@@ -174,27 +174,48 @@
 
   <main>
     <section id="review-section">
-      <h2 id="goToReview">🎬 감상 기록 남기기</h2>
+      <h2 id="goToReview" style="cursor: pointer;">🎬 감상 기록 남기기</h2>
       <div id="reviewList" class="card-container"></div>
     </section>
 
     <section id="diaryListSection">
-      <h2>📓 일기 기록</h2>
+      <h2 id="goToDiary" style="cursor: pointer;">📓 일기 기록</h2>
       <ul id="diaryList" class="diary-list"></ul>
-      <button onclick="location.href='diary.html'">✏️ 새 일기 쓰기</button>
     </section>
 
     <script>
+       // h2 클릭 시 review.html로 이동
+       const goToReview = document.getElementById("goToReview");
+       goToReview.addEventListener("click", () => {
+        window.location.href = "review.html";
+       });
+
+       // 기존 reviewList 카드 클릭 이벤트
+       const reviewList = document.getElementById("reviewList");
+       reviewList.addEventListener("click", e => {
+        const card = e.target.closest(".review-card");
+        if (card) {
+          localStorage.setItem("currentReview", card.dataset.id);
+          window.location.href = "review.html";
+        }
+       });
      const diaryList = document.getElementById("diaryList");
      const diaryData = JSON.parse(localStorage.getItem("diaries") || "[]");
+      
+     // h2 클릭 시 diary.html로 이동
+      const goToDiary = document.getElementById("goToDiary");
+      goToDiary.addEventListener("click", () => {
+        window.location.href = "diary.html";
+      });
 
-    diaryData.forEach((d, idx) => {
+     diaryData.forEach((d, idx) => {
       const li = document.createElement("li");
       li.className = "diary-item";
       li.innerHTML = `<span>${d.date}</span> <strong>${d.title}</strong>`;
       li.onclick = () => location.href = `view.html?id=${idx}`;
       diaryList.appendChild(li);
-    });
+      });
+  
     </script>
 
   </main>
@@ -219,7 +240,6 @@
    }
 
     // 감상기록 목록 표시
-    const reviewList = document.getElementById("reviewList");
     const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
 
     reviewList.innerHTML = reviews.map((r, i) => `
