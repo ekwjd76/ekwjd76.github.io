@@ -1,16 +1,89 @@
-/* --- 기존 provided styles (kept) --- */
-body {
-  font-family: 'Pretendard', sans-serif;
-  background: #fafafa;
-  margin: 0;
-  padding: 0;
-}
+/* 모든 곳에 공통 */
+
+:root {
+  --bg: #fafafa;
+  --card-bg: #ffffff;
+  --text: #222;
+  --muted: #666;
+  --accent: #a58cde;
+  --bg-beige: #f5efe7;
+  --accent-lavender: #b9a0ff;
+  --text-main: #4a4a4a;
+  --white-card: #ffffff;
+    }
 
 header {
   background: #a58cde;
   color: white;
   padding: 15px;
   text-align: center;
+}
+
+#site-header {
+   border-bottom: 2px solid #e0d9ff;
+  background: linear-gradient(to right,#d8c9ff,#b9a0ff); /* 덮어씀 */
+  padding: 14px 20px; /* 덮어씀 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 날짜/위치 섹션 스타일 */
+#site-header .header-date-location {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: right;
+}
+
+/* 날짜 텍스트 스타일 */
+#site-header #date {
+  font-weight: 700;
+}
+
+/* 위치 텍스트 스타일 */
+#site-header #location {
+  font-size: 0.9em;
+  opacity: 0.92;
+}
+
+/* 날씨 섹션 스타일 (아이콘과 정보 박스) */
+#site-header #weather {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 날씨 아이콘 스타일 */
+#site-header #weather-icon {
+  font-size: 24px;
+  line-height: 1; /* 글꼴 크기에 맞게 라인 높이 조절 */
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+}
+
+/* 날씨 정보 텍스트 박스 스타일 */
+#site-header .header-weather-info {
+  text-align: right;
+}
+
+/* 날씨 설명 텍스트 스타일 */
+#site-header #weather-desc {
+  font-weight: 700;
+}
+
+/* 온도 텍스트 스타일 */
+#site-header #weather-temp {
+  font-size: 0.9em;
+  opacity: 0.95;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -225,4 +298,44 @@ button {
   border: 2px solid #6f55d6;
   font-weight: 800;
   color: #6f55d6;
+}
+/* diary-extension.css 추가 (style.css 끝에 붙여넣기) */
+#weekdays { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-weight:700; color:#6a5acd; margin-bottom:6px; }
+#calendar { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.day-cell { padding:8px 6px; border-radius:8px; background:#fff; border:1px solid #f1f1f1; cursor:pointer; min-height:40px; display:flex;align-items:center;justify-content:center; }
+.day-cell.has-entry { box-shadow: inset 0 -4px 0 rgba(165,140,222,0.12); }
+.day-cell:hover{ background:#f4f0ff; }
+.day-cell.selected{ background:#a58cde;color:#fff;font-weight:700; }
+.day-cell.today{ border:2px solid #6f55d6; font-weight:800; color:#6f55d6; }
+.flat-item{ padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.btn-small{ padding:6px 8px; font-size:13px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+/* === diary-protect-and-theme.css 추가 (맨 끝에 붙여넣기) === */
+
+
+/* 다크 테마 */
+.theme-dark{
+  --bg: #111217;
+  --card-bg: #1b1f25;
+  --text: #eaeaea;
+  --muted: #bfbfbf;
+  --accent: #8d6cff;
+}
+
+/* 전역 적용 */
+body{ background:var(--bg); color:var(--text); }
+header, .card, section { background:var(--card-bg); color:var(--text); }
+
+/* modal 기본 스타일 (모달 박스 테마 따름) */
+#diary-lock-modal .modal-box { background:var(--card-bg); color:var(--text); }
+
+/* 버튼 간단 스타일 */
+#diary-protect-controls button {
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.08);
+  background:transparent;
+  cursor:pointer;
+}
+.theme-dark #diary-protect-controls button {
+  border-color: rgba(255,255,255,0.08);
 }
