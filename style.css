@@ -13,11 +13,16 @@
     }
 
 header {
-  background: #a58cde;
+  border-bottom: 2px solid #e0d9ff;
+  background: linear-gradient(to right, #d8c9ff, #b9a0ff);
   color: white;
-  padding: 15px;
-  text-align: center;
-}
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
 
 #site-header {
    border-bottom: 2px solid #e0d9ff;
@@ -339,3 +344,73 @@ header, .card, section { background:var(--card-bg); color:var(--text); }
 .theme-dark #diary-protect-controls button {
   border-color: rgba(255,255,255,0.08);
 }
+
+/* review.html에서 가져온 카드 컨테이너 및 카드 기본 스타일 */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.review-card {
+  /* ... 카드 디자인 스타일 ... */
+  background: var(--card-bg); /* 다크/라이트 테마 지원 */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+/* ... (review-card:hover, img, placeholder, title 스타일) ... */
+.diary-list-container {
+  display: flex;
+  flex-direction: column; /* 카드를 세로로 쌓습니다. */
+  gap: 8px; /* 카드 사이 간격 */
+  width: 100%;
+  padding-top: 10px;
+}
+
+.list-review-card {
+  /* 카드 기본 디자인 속성 (카드 느낌 부여) */
+  background: var(--card-bg, #ffffff); 
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+
+  /* 크기 및 레이아웃 (막대 모양 크기 부여) */
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  padding: 12px 15px; /* 내부 패딩 */
+  min-height: 60px; /* 최소 높이 지정 */
+}
+
+.list-review-card:hover {
+  background: #f8f5ff; /* 호버 시 배경색 변경 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.list-review-card .card-date {
+  font-size: 0.9em;
+  color: var(--muted, #666);
+  min-width: 100px; /* 날짜 영역 폭 고정 */
+}
+
+.list-review-card .card-title {
+  flex-grow: 1; /* 제목이 남은 공간을 채우게 함 */
+  font-weight: 700;
+  margin: 0 15px;
+  /* 말줄임표 처리 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-review-card .card-folder {
+  font-size: 0.85em;
+  color: var(--accent, #a58cde);
+}
+
