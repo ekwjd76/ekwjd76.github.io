@@ -5,7 +5,7 @@ function saveDiary() {
   if (input.trim() === "") return;
   const diaries = JSON.parse(localStorage.getItem("diaries") || "[]");
   if (diaries.length === 0 || (diaries[0].text !== undefined && diaries[0].title === undefined)) {
-      diaries.push({ date: new Date().toLocaleDateString(), text: input });
+      diaries.push({ date: new Date().toISOString().split('T')[0], text: input });
   } else {
       console.warn("Attempted to use legacy saveDiary() on extended data. Using saveDiaryFull() is recommended.");
       return; 
@@ -133,7 +133,7 @@ function onDayClick(iso, cellEl){
   cellEl.classList.add('selected');
   // update date display
   const dEl = diaryDateEl();
-  if(dEl) dEl.textContent = `${formatDisplayISO(iso)} (${dd.toLocaleDateString('ko-KR',{weekday:'short'})})`;
+  if(dEl) dEl.textContent = `${formatDisplayISO(iso)} (${new Date(iso).toLocaleDateString('ko-KR',{weekday:'short'})})`;
   // render selected-date list
   renderSelectedDateList();
 }
