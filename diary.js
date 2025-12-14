@@ -133,7 +133,7 @@ function onDayClick(iso, cellEl){
   cellEl.classList.add('selected');
   // update date display
   const dEl = diaryDateEl();
-  if(dEl) dEl.textContent = `${formatDisplayISO(iso)} (${new Date(iso).toLocaleDateString('ko-KR',{weekday:'short'})})`;
+  if(dEl) dEl.textContent = `${formatDisplayISO(iso)} (${dd.toLocaleDateString('ko-KR',{weekday:'short'})})`;
   // render selected-date list
   renderSelectedDateList();
 }
@@ -439,6 +439,7 @@ modal()?.addEventListener('click', (ev)=>{
 });
 
 function init(){
+   const dEl = diaryDateEl();
   const raw = JSON.parse(localStorage.getItem('diaries') || '[]');
   
   if(raw.length && raw[0].text !== undefined && raw[0].date !== undefined && raw[0].title === undefined){

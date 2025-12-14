@@ -288,6 +288,8 @@
   document.getElementById("date").textContent = today.toLocaleDateString('ko-KR', {
     year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
   });
+  
+const API_KEY = "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=kr";
 
   const weatherBox = document.getElementById("weather");
   if (navigator.geolocation) {
