@@ -75,7 +75,13 @@ function saveState(){
   localStorage.setItem('folders', JSON.stringify(folders));
 }
 
-function formatISO(d){ return d.toISOString().split('T')[0]; } // YYYY-MM-DD
+function formatISO(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`; } // YYYY-MM-DD
+
+
 function formatDisplayISO(iso){
   if(!iso) return '';
   const dd = new Date(iso + 'T00:00:00');
@@ -126,6 +132,7 @@ function renderCalendar(y,m){
 
 /* day click */
 let selectedISO = null;
+
 function onDayClick(iso, cellEl){
   selectedISO = iso;
   // highlight selected cell
@@ -445,7 +452,7 @@ function init(){
   if(raw.length && raw[0].text !== undefined && raw[0].date !== undefined && raw[0].title === undefined){
     diaries = raw.map(r => ({
       _id: (Date.now().toString(36) + Math.random().toString(36).slice(2,6)),
-      date: (new Date(r.date)).toISOString().split('T')[0], 
+      date: formatISO(new Date(r.date)), 
       title: '(기존 일기)',
       content: r.text || '',
       image: '',
@@ -464,7 +471,7 @@ function init(){
   calendarMonth = today.getMonth();
   renderCalendar(calendarYear, calendarMonth);
 
-  selectedISO = formatISO(today);
+  //selectedISO = formatISO(today);
   
   if(dEl) dEl.textContent = `${formatDisplayISO(selectedISO)} (${today.toLocaleDateString('ko-KR',{weekday:'short'})})`;
   
@@ -472,7 +479,7 @@ function init(){
     highlightCalendarDate(selectedISO);
   }
   
-  renderSelectedDateList();
+  //renderSelectedDateList();
 
   loadDiaryList();
   renderFolders();
